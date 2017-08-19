@@ -1,0 +1,23 @@
+
+
+    {% for entry in entries %}
+    <li class="media list-group-item p-4">
+        <div class="media-body">
+            <div class="media-body-text">
+                <div class="media-heading">
+                    <small class="float-right text-muted">
+                        {{ entry.hours|floatformat }} hr -
+                        {{ entry.day|date:"M j, Y" }}
+                        {% if user.is_authenticated and user == entry.user %}
+                        <a href="{% url 'entry.update' entry.id %}">edit</a>
+                        {% endif %}
+                    </small>
+                    <h6>{{ entry.user.username }}</h6>
+                </div>
+                <p>{{ entry.text|linebreaksbr }}</p>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+
+</ul>

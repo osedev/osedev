@@ -1,0 +1,53 @@
+<canvas id="global-effort"></canvas>
+<script>
+    chartColors = {
+        hours: 'rgb(220, 57, 18)',
+        hours_fill: 'rgba(220, 57, 18, 0.3)',
+        devs: 'rgb(51, 102, 204)',
+        devs_fill: 'rgba(51, 102, 204, 0.3)'
+    };
+    new Chart(document.getElementById("global-effort").getContext('2d'), {
+        type: 'line',
+        options: {
+            title:{
+                display:true,
+                text:'OSE Active Developers and Development Effort'
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Week'
+                    }
+                }]
+            }
+        },
+        data: {
+            labels: [
+                {% for point in global_effort %}
+                    '{{ point.week }}',
+                {% endfor %}
+            ],
+            datasets: [{
+                label: "Hours/10",
+                borderColor: chartColors.hours,
+                backgroundColor: chartColors.hours_fill,
+                data: [
+                    {% for point in global_effort %}
+                        {% widthratio point.minutes 600 1 %},
+                    {% endfor %}
+                ]
+            }, {
+                label: "Developers",
+                borderColor: chartColors.devs,
+                backgroundColor: chartColors.devs_fill,
+                data: [
+                    {% for point in global_effort %}
+                        {{ point.users }},
+                    {% endfor %}
+                ]
+            }]
+        }
+    });
+</script>

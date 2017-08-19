@@ -1,0 +1,20 @@
+{% extends "frame.html" %}
+{% block content %}
+    <div class="container">
+        <form method="post">{% csrf_token %}
+        {% for value in step_values %}
+            <h3>Step {{ value.step.number }}. {{ value.step.title }}</h3>
+            {{ value.widget }}
+        {% endfor %}
+        <div class="form-group">
+            <div style="float: right;">
+                <button type="submit" name="action" value="save" class="btn btn-secondary">Save</button>
+                <button type="submit" name="action" value="submit" class="btn btn-primary">Save & Submit</button>
+            </div>
+            <div>
+                <button type="submit" name="action" value="delete" class="btn btn-danger">Delete Application</button>
+            </div>
+        </div>
+        </form>
+    </div>
+{% endblock %}

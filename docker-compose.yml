@@ -1,0 +1,11 @@
+version: '2'
+services:
+  test:
+    build: .
+    depends_on:
+      - db
+      - rabbitmq
+  db:
+    image: postgres:10
+  rabbitmq:
+    image: rabbitmq

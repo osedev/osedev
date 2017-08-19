@@ -1,0 +1,9 @@
+[run]
+branch = True
+source =
+  ose
+omit =
+  ose/wsgi.py
+  ose/settings/*
+  ose/apps/*/migrations/*
+  ose/apps/*/management/*

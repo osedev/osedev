@@ -1,0 +1,172 @@
+@import "./bootstrap/_variables.scss";
+
+// icons
+$icon-font-path: "../fonts/";
+$icon-font-name: "toolkit-entypo";
+
+// Body
+$body-bg: #f5f8fa;
+
+// Component borders
+// Create a custom variable to base the border-color off the body background.
+$toolkit-border-color:  darken(#f5f8fa, 10%);
+// Then apply that to key components
+$panel-default-border:  $toolkit-border-color;
+$panel-inner-border:    $toolkit-border-color;
+$panel-footer-bg:       $body-bg;
+$list-group-border:     $toolkit-border-color;
+$navbar-border:         $toolkit-border-color;
+
+// Gray Scale
+$gray-darker:   #122a38;
+$gray-dark:     #1e3948;
+$gray:          #536570;
+$gray-light:    #9da9b0;
+$gray-lighter:  #d4dbe0;
+$gray-lightest: #f5f8fa;
+
+
+// Brand Scale
+$brand-primary: #3097D1;
+$brand-success: #4eb76e;
+$brand-warning: #cbb956;
+$brand-danger:  #bf5329;
+$brand-info:    #8eb4cb;
+
+// link and button colors
+$btn-primary-bg:     $brand-primary;
+$btn-primary-border: $brand-primary;
+$link-color:         $brand-primary;
+
+// alerts
+$alert-warning-border: #E6D0A1;
+
+
+// Text Color
+$font-family-sans-serif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-base:       $font-family-sans-serif;
+$text-color:             $gray-dark;
+$letter-spacing-base:    0;
+$line-height-base:       1.6;
+$font-weight-base:       300;
+
+// Main typography
+$font-size-root: 14px;
+
+// lead
+$lead-font-size:      floor(($font-size-base * 1.15));
+$lead-font-size-sm:   floor(($font-size-base * 1.5));
+$lead-font-weight:    300;
+$lead-line-height:    1.4;
+$lead-letter-spacing: 0;
+
+
+// Headings
+$headings-font-weight: 600;
+$headings-line-height: 1.2;
+
+
+// Btns
+$btn-font-size:      $font-size-base;
+$btn-text-transform: default;
+$btn-letter-spacing: none;
+$btn-default-color:  #536570;
+$btn-default-bg:     #fff;
+$btn-default-border: #d4dbe0;
+$btn-toolbar-divider-bg: $gray-lighter;
+
+
+// Inputs
+$input-border:            #d4dbe0;
+$input-color-placeholder: $gray-light;
+
+
+// z-index
+$zindex-zoom:  1080;
+$zindex-growl: 1090;
+
+
+$container-max-widths: (
+  lg: 960px + $grid-gutter-width-base,
+  xl: 1200px + $grid-gutter-width-base
+);
+@include _assert-ascending($container-max-widths, "$container-max-widths");
+
+
+// navbar
+$navbar-margin-bottom:                      0;
+$navbar-nav-active-font-weight:             inherit;
+
+$navbar-inverse-color:  rgba(255,255,255,.5);
+$navbar-inverse-bg:     $brand-primary;
+$navbar-inverse-border: #1C73A5;
+
+$navbar-inverse-hover-color:    rgba(255,255,255,.8);
+$navbar-inverse-active-color:   #fff;
+
+$navbar-inverse-toggle-border-color:  #1C73A5;
+$navbar-inverse-toggle-hover-bg:      darken($navbar-inverse-bg, 2%);
+
+$nav-item-inline-spacer: 2rem;
+
+
+// nav hover
+$nav-link-hover-bg: $gray-lightest;
+
+
+// nav bordered
+$nav-bordered-color:              inherit;
+$nav-bordered-color-active:       $brand-primary;
+$nav-bordered-font-weight:        300;
+$nav-bordered-font-weight-active: 500;
+
+
+// popover
+$popover-fallback-border-color: $gray-lighter;
+$popover-border-color:          $gray-lighter;
+
+
+
+// modal
+$modal-content-fallback-border-color: $gray-light;
+
+
+// misc colors
+$headings-small-color: inherit;
+
+
+// dropdowns
+$dropdown-link-color:     $navbar-light-color;
+$dropdown-border:         rgba(0,0,0,.05);
+$dropdown-padding:        10px 0;
+$dropdown-anchor-padding: 5px 20px;
+$dropdown-link-hover-bg:  $gray-lightest;
+
+
+// Spacing
+$spacer:   20px;
+$spacer-x: $spacer;
+$spacer-y: $spacer;
+
+
+// zoom
+$zoom-overlay-bg: #fff;
+
+
+// list group
+$list-group-hover-bg: $gray-lightest;
+
+// Custom forms
+$custom-select-color:       $input-color;
+$custom-select-bg:          $input-bg;
+$custom-select-disabled-bg: $input-bg-disabled;
+
+$custom-control-indicator-bg:     $input-bg;
+$custom-control-indicator-border: rgba(0,0,0,.15);
+
+$custom-control-indicator-checked-bg:      $brand-primary;
+$custom-control-indicator-checked-border:  $brand-primary;
+$custom-control-indicator-active-bg:       lighten($brand-primary, 15%);
+$custom-control-indicator-active-border:   lighten($brand-primary, 15%);
+$custom-control-indicator-disabled-bg:     darken($input-bg, 5%);
+$custom-control-indicator-disabled-border: $custom-control-indicator-border;

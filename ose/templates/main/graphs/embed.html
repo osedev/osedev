@@ -1,0 +1,10 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head><title>{% block title %}OSE{% endblock %}</title></head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="{% static 'dist/toolkit.js' %}"></script>
+{% include graph_html %}
+</body>
+</html>

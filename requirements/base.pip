@@ -1,0 +1,9 @@
+fabric3
+psycopg2
+
+django
+django-fsm
+django-dartium
+django-yamlfield
+jsonfield
+celery

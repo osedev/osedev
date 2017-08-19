@@ -1,0 +1,3 @@
+name: osehub
+dependencies:
+  web_components: any

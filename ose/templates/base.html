@@ -1,0 +1,26 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}OSE{% endblock %}</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+    <link href="{% static 'dist/toolkit.css' %}" rel="stylesheet">
+</head>
+
+<body class="{% block body_class %}with-top-navbar{% endblock %}">
+
+{% block container %}{% endblock %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="{% static 'dist/toolkit.js' %}"></script>
+{% block custom_js %}{% endblock %}
+</body>
+</html>

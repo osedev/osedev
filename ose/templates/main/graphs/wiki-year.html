@@ -1,0 +1,47 @@
+<canvas id="wiki-registrations-year"></canvas>
+<script>
+    new Chart(document.getElementById("wiki-registrations-year").getContext('2d'), {
+        type: 'line',
+        options: {
+            title:{
+                display:true,
+                text:'Wiki Activity ({{ wiki_year }})'
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }]
+            }
+        },
+        data: {
+            labels: [
+                {% for point in wiki_registrations_year %}
+                    '{{ point.month }}',
+                {% endfor %}
+            ],
+            datasets: [{
+                label: "Revisions/100",
+                borderColor: 'rgb(220, 57, 18)',
+                backgroundColor: 'rgba(220, 57, 18, 0.3)',
+                data: [
+                    {% for point in wiki_revisions_year %}
+                        {% widthratio point.revisions 100 1 %},
+                    {% endfor %}
+                ]
+            }, {
+                label: "Registrations",
+                borderColor: 'rgb(51, 102, 204)',
+                backgroundColor: 'rgba(51, 102, 204, 0.3)',
+                data: [
+                    {% for point in wiki_registrations_year %}
+                        {{ point.users }},
+                    {% endfor %}
+                ]
+            }]
+        }
+    });
+</script>

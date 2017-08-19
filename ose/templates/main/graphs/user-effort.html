@@ -1,0 +1,38 @@
+<canvas id="user-effort"></canvas>
+<script>
+new Chart(document.getElementById("user-effort").getContext('2d'), {
+    type: 'line',
+    options: {
+        title:{
+            display:true,
+            text:'{{ username }} Level of Effort',
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Week'
+                }
+            }]
+        }
+    },
+    data: {
+        labels: [
+            {% for point in user_effort %}
+                '{{ point.week }}',
+            {% endfor %}
+        ],
+        datasets: [{
+            label: "Hours",
+            borderColor: 'rgb(220, 57, 18)',
+            backgroundColor: 'rgba(220, 57, 18, 0.3)',
+            data: [
+                {% for point in user_effort %}
+                    {% widthratio point.minutes 60 1 %},
+                {% endfor %}
+            ]
+        }]
+    }
+});
+</script>
