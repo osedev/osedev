@@ -17,7 +17,7 @@ layers:
       - pip3 install --src=/src -r requirements/app.pip
       - export DJANGO_SETTINGS_MODULE=ose.settings.common
       - python3 manage.py collectstatic --noinput
-    prepare: fab prepare:service={service},branch={git-branch}
+    prepare: fab prepare
     start: fab uwsgi
     wait-for: db:5432
   test:
