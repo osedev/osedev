@@ -3,7 +3,7 @@ services:
   test:
     build: .
     depends_on:
-      - db
+      - postgres
       - rabbitmq
   postgres:
     image: postgres:10
