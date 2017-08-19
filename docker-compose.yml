@@ -5,7 +5,7 @@ services:
     depends_on:
       - db
       - rabbitmq
-  db:
+  postgres:
     image: postgres:10
   rabbitmq:
     image: rabbitmq

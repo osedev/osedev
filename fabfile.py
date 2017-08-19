@@ -38,6 +38,7 @@ def updatecopyright():
     import glob
     from itertools import chain
     paths = [f for f in chain(
+        glob.glob('ose/*.py'),
         glob.glob('ose/apps/**/*.py', recursive=True),
         glob.glob('ose/lib/**/*.py', recursive=True),
     ) if 'migrations' not in f]
