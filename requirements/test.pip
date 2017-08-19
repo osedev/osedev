@@ -1,1 +1,3 @@
 factory-boy
+freezegun
+coverage
