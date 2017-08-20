@@ -50,7 +50,7 @@ class WikiView(CreateView):
         return super().get_context_data(
             profile=self.profile,
             entries=self.profile.entries.all()[:20],
-            user_effort=UserEffortGraph(self.profile, date.today()-timedelta(days=7*12))
+            user_effort=UserEffortGraph('weekly', self.profile)
         )
 
     def get_form_kwargs(self):
