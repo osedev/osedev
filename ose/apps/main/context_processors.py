@@ -13,7 +13,6 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from datetime import date, timedelta
 from ose.apps.onboarding.models import Application, ApplicationInstance
 from .graphs import *
 
@@ -25,14 +24,15 @@ def _user_applications(user):
 
 
 def ose(request):
-    start_of_effort = date.today()-timedelta(days=7*12)
+    if request.resolver_match.view_name.startswith('graph.embed'):
+        return {}
     ctx = {
-        'global_effort': global_effort(start_of_effort),
+        'global_effort': GlobalEffortGraph('weekly'),
         'available_applications': Application.objects.available(),
     }
     if request.user.is_authenticated:
         ctx.update({
-            'user_effort': user_effort(start_of_effort, request.user),
+            'user_effort': UserEffortGraph('weekly', request.user),
             'user_applications': _user_applications(request.user),
         })
     return ctx

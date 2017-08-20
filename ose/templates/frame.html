@@ -74,9 +74,9 @@
                 {% block effort_charts %}
                     <div class="card card-profile mb-4">
                         <div class="card-block">
-                            <canvas id="global-effort"></canvas>
+                            {{ global_effort.canvas|safe }}
                             {% if user_effort %}
-                            <br><canvas id="user-effort"></canvas>
+                            <br>{{ user_effort.canvas|safe }}
                             {% endif %}
                         </div>
                     </div>
@@ -103,89 +103,9 @@
 
 {% block custom_js %}
 <script>
-    chartColors = {
-        hours: 'rgb(220, 57, 18)',
-        hours_fill: 'rgba(220, 57, 18, 0.3)',
-        devs: 'rgb(51, 102, 204)',
-        devs_fill: 'rgba(51, 102, 204, 0.3)',
-    };
-    weekAxes = [{
-        display: true,
-        scaleLabel: {
-            display: true,
-            labelString: 'Week'
-        }
-    }];
-    new Chart(document.getElementById("global-effort").getContext('2d'), {
-        type: 'line',
-        options: {
-            title:{
-                display:true,
-                text:'OSE Active Developers and Development Effort'
-            },
-            scales: {
-                xAxes: weekAxes
-            }
-        },
-        data: {
-            labels: [
-                {% for point in global_effort %}
-                    '{{ point.week }}',
-                {% endfor %}
-            ],
-            datasets: [{
-                label: "Hours/10",
-                borderColor: chartColors.hours,
-                backgroundColor: chartColors.hours_fill,
-                data: [
-                    {% for point in global_effort %}
-                        {% widthratio point.minutes 600 1 %},
-                    {% endfor %}
-                ]
-            }, {
-                label: "Developers",
-                borderColor: chartColors.devs,
-                backgroundColor: chartColors.devs_fill,
-                data: [
-                    {% for point in global_effort %}
-                        {{ point.users }},
-                    {% endfor %}
-                ]
-            }]
-        }
-    });
-
+    {{ global_effort.js|safe }}
     {% if user_effort %}
-    new Chart(document.getElementById("user-effort").getContext('2d'), {
-        type: 'line',
-        options: {
-            title:{
-                display:true,
-                text:'Your Level of Effort',
-            },
-            scales: {
-                xAxes: weekAxes
-            }
-        },
-        data: {
-            labels: [
-                {% for point in user_effort %}
-                    '{{ point.week }}',
-                {% endfor %}
-            ],
-            datasets: [{
-                label: "Hours",
-                borderColor: chartColors.hours,
-                backgroundColor: chartColors.hours_fill,
-                data: [
-                    {% for point in user_effort %}
-                        {% widthratio point.minutes 60 1 %},
-                    {% endfor %}
-                ]
-            }]
-        }
-    });
+    {{ user_effort.js|safe }}
     {% endif %}
-
 </script>
 {% endblock %}

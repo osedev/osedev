@@ -15,13 +15,18 @@
 
 from django.urls import reverse
 from django import template
+from django.utils.html import escape, mark_safe
 register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def embed_graph(context, name):
+def embed_graph(context, period, graph, username=None):
     request = context['request']
+    kwargs = {'period': period, 'graph': graph}
+    if username is not None:
+        kwargs['username'] = username
     url = "{}://{}{}".format(
-        request.scheme, request.get_host(), reverse('graph.embed', kwargs={'graph': name})
+        request.scheme, request.get_host(), reverse('graph.embed', kwargs=kwargs)
     )
-    return '<html><iframe width="600" height="350" src="{}"></iframe></html>'.format(url)
+    iframe = escape('<html><iframe width="600" height="350" src="{}"></iframe></html>'.format(url))
+    return mark_safe('<code>'+iframe+'</code>')

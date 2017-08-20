@@ -3,59 +3,19 @@
 
 {% block content %}
     <ul class="list-group media-list media-list-stream mb-4">
-        <li class="media list-group-item p-4"><canvas id="global-effort"></canvas><br>{% embed_graph "global-effort" %}<br></li>
+        <li class="media list-group-item p-4">{{ global_effort.canvas|safe }}<br>{% embed_graph "weekly" "total" %}<br></li>
         {% if user_effort %}
-        <li class="media list-group-item p-4"><canvas id="user-effort"></canvas><br>{% embed_graph "user-effort" %}<br></li>
+        <li class="media list-group-item p-4">{{ user_effort.canvas|safe }}<br>{% embed_graph "weekly" "user" user.username %}<br></li>
         {% endif %}
-        <li class="media list-group-item p-4"><canvas id="all-user"></canvas><br>{% embed_graph "individual-efforts" %}<br></li>
+        <li class="media list-group-item p-4">{{ individual_efforts.canvas|safe }}<br>{% embed_graph "weekly" "user" %}<br></li>
     </ul>
 {% endblock %}
 
 {% block effort_charts %}{% endblock %}
 
 {% block custom_js %}
-    {{ block.super }}
-    <script>
-    new Chart(document.getElementById("all-user").getContext('2d'), {
-        type: 'line',
-        options: {
-            legend: {
-                display: true
-            },
-            title: {
-                display:true,
-                text:'OSE Individual Development Effort'
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Week'
-                    }
-                }]
-            }
-        },
-        data: {
-            labels: [
-                {% for week in individual_efforts.weeks %}
-                    '{{ week }}',
-                {% endfor %}
-            ],
-            datasets: [
-            {% for user in individual_efforts.users %}
-            {
-                label: '{{ user.name }}',
-                borderColor: '{{ user.color }}',
-                data: [
-                    {% for hour in user.hours %}
-                        {{ hour }},
-                    {% endfor %}
-                ]
-            },
-            {% endfor %}
-            ]
-        }
-    });
-    </script>
+{{ block.super }}
+<script>
+{{ individual_efforts.js|safe }}
+</script>
 {% endblock %}
