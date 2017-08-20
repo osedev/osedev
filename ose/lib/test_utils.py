@@ -9,7 +9,6 @@ class TestDateUtils(TestCase):
         end = date(1984, 1, 18)
         start = end - timedelta(days=30)
         self.assertEqual([
-            date(1983, 12, 19),
             date(1983, 12, 26),
             date(1984, 1, 2),
             date(1984, 1, 9),
