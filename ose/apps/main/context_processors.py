@@ -32,7 +32,7 @@ def ose(request):
     }
     if request.user.is_authenticated:
         ctx.update({
-            'user_effort': UserEffortGraph('weekly', request.user),
+            'user_effort': UserEffortGraph(request.user, 'weekly'),
             'user_applications': _user_applications(request.user),
         })
     return ctx
