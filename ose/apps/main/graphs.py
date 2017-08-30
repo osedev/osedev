@@ -43,8 +43,11 @@ class BaseGraph:
         'yearly': 'Year'
     }
 
-    def __init__(self, period, start=None):
-        self.canvas = '<canvas id="{}"></canvas>'.format(self.id)
+    def __init__(self, period, start=None, height=None):
+        self.canvas = '<canvas id="{}"{}></canvas>'.format(
+            self.id, ' height="{}px"'.format(height) if height else ''
+        )
+        self.height = height
         self.template = 'main/graphs/{}.js'.format(self.id)
         self.period = period
         self.end = date.today()
@@ -129,6 +132,7 @@ class BaseGraph:
 
     def get_context(self, **kwargs):
         context = {
+            'graph': self,
             'element_id': self.id,
             'labels': self.labels,
             'period_type': self.period,
@@ -147,8 +151,8 @@ class BaseGraph:
 class UserEffortGraph(BaseGraph):
     id = 'user-effort'
 
-    def __init__(self, period, user, start=None):
-        super().__init__(period, start)
+    def __init__(self, user, *args):
+        super().__init__(*args)
         self.user = user
 
     @property

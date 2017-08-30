@@ -53,9 +53,7 @@ class GraphsView(TemplateView):
     template_name = 'main/graphs.html'
 
     def get_context_data(self, **kwargs):
-        year = date.today().year
         return super().get_context_data(
-            wiki_year=year,
             individual_efforts=IndividualEffortsGraph('weekly'),
             **kwargs
         )
@@ -67,15 +65,22 @@ class EmbedGraphView(TemplateView):
     def get_context_data(self, **kwargs):
         period = kwargs['period']
         graph = kwargs['graph']
+        start = self.request.GET.get('start', None)
+        height = self.request.GET.get('height', None)
+        try:
+            m, d, y = start.split('/')
+            start = date(int(y), int(m), int(d))
+        except:
+            start = None
         if graph == 'user':
             if kwargs.get('username'):
                 return super().get_context_data(graph=UserEffortGraph(
-                    period, get_object_or_404(User, username=kwargs['username'])
+                    get_object_or_404(User, username=kwargs['username']), period, start, height
                 ))
             else:
-                return super().get_context_data(graph=IndividualEffortsGraph(period))
+                return super().get_context_data(graph=IndividualEffortsGraph(period, start, height))
         elif graph == 'total':
-            return super().get_context_data(graph=GlobalEffortGraph(period))
+            return super().get_context_data(graph=GlobalEffortGraph(period, start, height))
         else:
             raise NotImplementedError
 
@@ -85,15 +90,15 @@ class ReportView(View):
     def get(self, request, *args, **kwargs):
         response = HttpResponse(content_type='text/csv')
         writer = csv.writer(response)
-        today = date.today()
+        start = date(2017, 2, 1)
         if kwargs['report'] == 'everybody':
-            report = GlobalEffortGraph('weekly', date(today.year-1, today.month, 1))
+            report = GlobalEffortGraph('weekly', start)
             for day, value in zip(report.periods, report.extrapolate(report.data)):
                 if value:
                     writer.writerow([day.strftime('%m/%d/%y'), value['users'], round(value['hours']/10, 3)])
         else:
             user = get_object_or_404(User, username=kwargs['report'])
-            report = UserEffortGraph('weekly', user, date(today.year-1, today.month, 1))
+            report = UserEffortGraph(user, 'weekly', start)
             for day, value in zip(report.periods, report.extrapolate(report.data)):
                 if value:
                     writer.writerow([day.strftime('%m/%d/%y'), round(value['hours'], 2)])

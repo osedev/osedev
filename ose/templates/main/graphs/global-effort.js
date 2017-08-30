@@ -24,7 +24,10 @@ new Chart(document.getElementById("{{ element_id }}").getContext('2d'), {
                     min: 0
                 }
             }]
-        }
+        },
+        //{% if graph.height %}
+        maintainAspectRatio: false
+        //{% endif %}
     },
     data: {
         labels: [
