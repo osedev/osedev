@@ -191,7 +191,7 @@ class IndividualEffortsGraph(BaseGraph):
                     randint(1, 255),
                 ),
                 'data': list(self.extrapolate(data)),
-                'name': "{} {}".format(user.first_name, user.last_name[0] if user.last_name else ''),
+                'name': user.first_name+(' '+user.last_name[0]+'.' if user.last_name else ''),
             }
 
     def get_context(self, **kwargs):
