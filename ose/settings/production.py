@@ -1,5 +1,7 @@
 from .common import *
 
+DEBUG = True
+
 ALLOWED_HOSTS = ['osedev.org']
 
 SESSION_COOKIE_SECURE = True
