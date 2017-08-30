@@ -20,5 +20,5 @@ urlpatterns = [
     url(r'^activity$', ActivityView.as_view(), name='activity'),
     url(r'^graphs$', GraphsView.as_view(), name='graphs'),
     url(r'^graph/(?P<period>(weekly|monthly|yearly))/(?P<graph>[\w-]+)/(?P<username>[\w ]+)?$', EmbedGraphView.as_view(), name='graph.embed'),
-    url(r'^report/(?P<report>[\w- ]+)\.csv$', ReportView.as_view(), name='report.csv'),
+    url(r'^report/(?P<report>[\w ]+)\.csv$', ReportView.as_view(), name='report.csv'),
 ]
