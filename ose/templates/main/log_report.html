@@ -1,0 +1,39 @@
+{% extends "frame.html" %}
+{% load ose %}
+
+{% block content %}
+<ul class="list-group media-list media-list-stream mb-4">
+<style>
+#log-report td, #log-report th {
+    padding: 5px 20px 5px 10px;
+}
+</style>
+<table id="log-report">
+<thead>
+    <tr>
+        <td align="right"><small>ID</small></td>
+        <th>Date</th>
+        <th>Developer</th>
+        <th>Hours</th>
+    </tr>
+</thead>
+{% for log in logs %}
+    {% ifchanged %}
+    <tr>
+        <td></td>
+        <td colspan="3">Week {{ log.year }}-{{ log.week }}</td>
+    </tr>
+    {% endifchanged %}
+    <tr>
+        <td align="right"><small>{{ log.id }}</small></td>
+        <td>{{ log.day }}</td>
+        <td>{{ log.user.get_full_name }} ({{ log.user.username }})</td>
+        <td>{{ log.hours }}</td>
+    </tr>
+{% endfor %}
+</table>
+</ul>
+{% endblock %}
+
+{% block effort_charts %}{% endblock %}
+{% block custom_js %}{% endblock %}

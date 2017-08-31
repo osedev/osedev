@@ -85,7 +85,7 @@ class EmbedGraphView(TemplateView):
             raise NotImplementedError
 
 
-class ReportView(View):
+class CSVLogReportView(View):
 
     def get(self, request, *args, **kwargs):
         response = HttpResponse(content_type='text/csv')
@@ -103,3 +103,17 @@ class ReportView(View):
                 if value:
                     writer.writerow([day.strftime('%m/%d/%y'), round(value['hours'], 2)])
         return response
+
+
+class LogReportView(TemplateView):
+    template_name = 'main/log_report.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['logs'] = (
+            Entry.objects
+            .prefetch_related('user')
+            .annotate(week=ExtractWeek('day'), year=ExtractISOYear('day'))
+            .all()
+        )
+        return ctx
