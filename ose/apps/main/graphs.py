@@ -119,7 +119,7 @@ class BaseGraph:
                     # somehow the value is before the 'start', fast forward values to match periods
                     while value and (iso_year, iso_week_number) > (value['year'], value['week']):
                         value = next(data, None)
-                    if (iso_year, iso_week_number) == (value['year'], value['week']):
+                    if value and (iso_year, iso_week_number) == (value['year'], value['week']):
                         match = True
 
             if match:

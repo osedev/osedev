@@ -18,7 +18,7 @@ from datetime import date, timedelta
 
 def mondays(start, end):
     day = start + timedelta(days=7-start.weekday())
-    while day < end:
+    while day <= end:
         yield day
         day += timedelta(days=7)
 
