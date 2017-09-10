@@ -119,6 +119,7 @@ AUTHENTICATION_BACKENDS = (
 
 # Django Allauth Configuration
 # http://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_ADAPTER = "ose.apps.user.account.AccountAdapter"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
@@ -133,6 +134,7 @@ ACCOUNT_USERNAME_BLACKLIST = (
     'app', 'activity', 'graph', 'graphs', 'report', 'reports',
 )
 ACCOUNT_USERNAME_MIN_LENGTH = 2
+SOCIALACCOUNT_ADAPTER = "ose.apps.user.account.SocialAccountAdapter"
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
