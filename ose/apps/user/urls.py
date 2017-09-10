@@ -18,7 +18,7 @@ from django.conf.urls import url, include
 from .views import *
 
 urlpatterns = [
-    url(r'^auth/', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('allauth.urls')),
     url(r'^settings$', login_required(SettingsView.as_view()), name="user.settings"),
     url(r'^wiki/(?P<username>[\w\. ]+)$', WikiView.as_view(), name="user.wiki"),
     url(r'^(?P<username>[\w\. ]+)$', ProfileView.as_view(), name="user.profile"),

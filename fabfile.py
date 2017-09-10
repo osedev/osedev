@@ -1,6 +1,9 @@
 import os
-from fabric.api import local
+from fabric.api import env, local, run, get, sudo
 from fabric.context_managers import shell_env
+
+
+env.hosts = ['damoti.com']
 
 
 def prepare():
@@ -57,69 +60,37 @@ def updatecopyright():
             new.writelines(lines)
 
 
-def initialdata():
-    import csv
-    from datetime import datetime, date, timedelta
-    import django; django.setup()
-    from ose.apps.user.models import User, Position, UserPosition, Term
-    from ose.apps.notebook.models import Entry
+def fetchdb(envname='production'):
+    """fetch remote database, see getdb"""
+    container = 'damoti_backup_1'
+    dbname = 'ose_'+envname
+    dump_file = 'ose.'+envname+'.dump'
+    dump_dir = '/var/lib/postgresql/backups'
+    dump_path = os.path.join(dump_dir, dump_file)
+    # -Fc : custom postgresql compressed format
+    run('docker run --rm --network damoti_default -v {dump_dir}:{dump_dir} postgres:10 pg_dump -h postgres -U postgres -Fc -x -f {dump_path} {dbname}'
+        .format(**locals()))
+    get(dump_path, dump_file)
+    sudo('rm {}'.format(dump_path))
+    return dump_file
 
-    remap_names = {
-        'lemofack cédric': 'Cédric Lemofack',
-        'cédric lemofack': 'Cédric Lemofack',
-        'lemofack cedric': 'Cédric Lemofack',
-        'emmanouil karamousadakis': 'Emmanouil Karamousadakis',
-        'jean-baptiste vervaeck': 'Jean-Baptiste Vervaeck',
-        'marcin': 'Marcin Jakubowski',
-        'jose carlos urra': 'Jose Urra',
-        'jose carlos urra llanusa': 'Jose Urra',
-        'abeanderson': 'Abe Anderson',
-        'ayodele  arigbabu': 'Ayodele Arigbabu',
-        'chas murillo': 'Charles Murillo',
-        'hart': 'Hart Larew',
-        'jozef mikler iii': 'Jozef Mikler',
-        'laszlolg': 'Laszlo LG',
-        'oliver schlüter': 'Oliver Schlueter',
-    }
-    data = {}
-    with open('initial.csv') as csvfile:
-        reader = csv.reader(csvfile)
-        next(reader)
-        for row in reader:
-            name_col = row[1].strip()
-            name = remap_names.get(name_col.lower(), name_col)
-            data.setdefault(name, [])
-            data[name].append((row[0], float(row[3]), row[2], row[4]))
 
-    remap_users = {
-        'Marcin Jakubowski': 'marcin',
-        'Jean-Baptiste Vervaeck': 'jbvervaeck',
-        'Laszlo LG': 'laszlolg',
-        'Lex Berezhny': 'lex'
-    }
+def dbexists(name):
+    from django.conf import settings
+    db = settings.DATABASES['default']
+    dbs = local('psql -p {PORT} -lqt | cut -d \| -f 1'.format(**db), capture=True).split()
+    return name in dbs
 
-    osedev = Position.objects.create(name='OSE Developer', weeks=12, description='')
-    for name in sorted(data):
-        parts = name.split(' ')
-        first, last = parts[0], ' '.join(parts[1:])
-        username = remap_users.get(name, first[0].lower()+last.lower())
 
-        if username in ['lex', 'marcin', 'jmikler']:
-            user = User.objects.create_superuser(username, '', 'password', first_name=first, last_name=last)
-        else:
-            user = User.objects.create_user(username, '', None, first_name=first, last_name=last)
-
-        for idx, entry in enumerate(data[name]):
-            day = datetime.strptime(entry[0], '%m/%d/%Y %H:%M:%S').date()
-            Entry.objects.create(
-                day=day, user=user, minutes=int(entry[1]*60),
-                text='\n'.join(entry[-2:])
-            )
-            if idx == 0:
-                pos = UserPosition.objects.create(user=user, position=osedev)
-                pos.term = Term.objects.create(
-                    user_position=pos,
-                    start=day,
-                    end=date.today()+timedelta(days=7*12)
-                )
-                pos.save()
+def getdb(envname='production'):
+    """fetch and load remote database"""
+    from django.conf import settings
+    db = settings.DATABASES['default']
+    args = '-p {PORT} {NAME}'.format(**db)
+    dump_file = fetchdb(envname)
+    if dbexists('ose_local'):
+        local('dropdb '+args)
+    local('createdb '+args)
+    local('pg_restore -p {PORT} -d {NAME} -O {FILE}'.format(FILE=dump_file, **db))
+    local('psql -c "ANALYZE" '+args)
+    local('rm {}'.format(dump_file))

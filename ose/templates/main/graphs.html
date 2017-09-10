@@ -1,7 +1,7 @@
 {% extends "frame.html" %}
 {% load ose %}
 
-{% block content %}
+{% block content_column %}
     <ul class="list-group media-list media-list-stream mb-4">
         <li class="media list-group-item p-4">{{ global_effort.canvas|safe }}<br>{% embed_graph "weekly" "total" %}<br></li>
         {% if user_effort %}

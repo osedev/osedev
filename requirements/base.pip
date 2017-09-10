@@ -3,7 +3,9 @@ psycopg2
 
 django
 django-fsm
+django-allauth
 django-dartium
 django-yamlfield
 jsonfield
 celery
+markdown

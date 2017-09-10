@@ -7,6 +7,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'abc123')
 
 DEBUG = False
 
+SITE_ID = 1
+
 ALLOWED_HOSTS = []
 
 BROKER_URL = 'amqp://guest:guest@rabbitmq:5672//'
@@ -19,16 +21,26 @@ CELERY_ACCEPT_CONTENT = ["json"]
 AUTH_USER_MODEL = 'user.User'
 X_FRAME_OPTIONS = 'ALLOW'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+
+EMAIL_HOST = 'mail'
+DEFAULT_FROM_EMAIL = 'hr@osedev.org'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_dartium',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+#    'allauth.socialaccount.providers.google',
+#    'allauth.socialaccount.providers.facebook',
+#    'allauth.socialaccount.providers.github',
+#    'allauth.socialaccount.providers.openid',
     'ose.lib',
     'ose.apps.user',
     'ose.apps.main',
@@ -100,13 +112,34 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+# Django Allauth Configuration
+# http://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_USERNAME_BLACKLIST = (
+    'auth', 'account', 'accounts', 'user', 'users', 'settings', 'password',
+    'admin', 'main', 'notebook', 'notebooks', 'onboarding', 'site', 'wiki', 'task', 'tasks',
+    'app', 'activity', 'graph', 'graphs', 'report', 'reports',
+)
+ACCOUNT_USERNAME_MIN_LENGTH = 2
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'US/Central'
 
 USE_I18N = True
 

@@ -2,7 +2,9 @@ from .common import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['osedev.localhost']
+ALLOWED_HOSTS = ['localhost']
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
@@ -13,4 +15,5 @@ STATICFILES_DIRS += (
 
 DATABASES['default'].update({
     'NAME': 'ose_local',
+    'PORT': '5433'
 })
