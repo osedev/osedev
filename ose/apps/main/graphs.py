@@ -13,13 +13,14 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from datetime import date, timedelta
+import datetime
 from django.template.loader import render_to_string
 from django.db.models import DateTimeField
 from django.db.models.aggregates import Sum
 from django.db.models.aggregates import Count
 from django.db.models.functions import Extract, ExtractWeek, TruncMonth, TruncYear
 from django.utils.safestring import mark_safe
+from django.utils.timezone import now, timedelta
 from random import randint
 
 from ose.apps.user.models import User
@@ -50,7 +51,7 @@ class BaseGraph:
         self.height = height
         self.template = 'main/graphs/{}.js'.format(self.id)
         self.period = period
-        self.end = date.today()
+        self.end = now().date()
         self.start = self.get_start(start)
         self.periods = list(self.get_periods())
         self.labels = list(self.get_lables(self.periods))
@@ -62,9 +63,9 @@ class BaseGraph:
             return self.end-timedelta(days=84)
         elif self.period == 'monthly':
             start = self.end-timedelta(days=365)
-            return date(start.year, start.month, 1)
+            return datetime.date(start.year, start.month, 1)
         elif self.period == 'yearly':
-            return date(self.end.year-3, 1, 1)
+            return datetime.date(self.end.year-3, 1, 1)
         else:
             raise LookupError
 
