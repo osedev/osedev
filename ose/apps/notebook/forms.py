@@ -14,7 +14,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
+from django.forms.widgets import Select
 from django.utils.functional import cached_property
+from django.utils.timezone import now, timedelta
 from .models import Entry
 
 
@@ -45,10 +47,36 @@ class EntryForm(forms.ModelForm):
 
     class Meta:
         model = Entry
-        fields = 'text', 'minutes'
+        fields = 'text', 'day', 'minutes'
         labels = {
             'minutes': "Hours",
         }
         field_classes = {
             'minutes': DecimalMinuteHoursField,
         }
+        widgets = {
+            'day': Select(
+                attrs={'class': 'custom-select input-group-addon'}
+            )
+        }
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.fields['day'].widget.choices = list(self.get_last_7_days())
+
+    @staticmethod
+    def get_last_7_days():
+        today = now().date()
+        for i in range(7):
+            day = today - timedelta(days=i)
+            label = day.strftime('W%W - %b. %d - %a')
+            if day == today:
+                label += ' (Today)'
+            yield day.strftime('%Y-%m-%d'), label
+
+    def clean_day(self):
+        day = self.cleaned_data['day']
+        permitted = now().date() - timedelta(days=8)
+        if day < permitted:
+            raise forms.ValidationError("You cannot modify entries older than a week.")
+        return day

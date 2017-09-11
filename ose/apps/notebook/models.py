@@ -13,15 +13,15 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
 from django.db import models
+from django.utils.timezone import now, timedelta
 
 
 class Entry(models.Model):
     text = models.TextField()
     minutes = models.IntegerField()
     user = models.ForeignKey("user.User", related_name="entries", on_delete=models.CASCADE)
-    day = models.DateField(default=datetime.date.today)
+    day = models.DateField(default=now)
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -32,3 +32,7 @@ class Entry(models.Model):
     @property
     def hours(self):
         return self.minutes / 60
+
+    @property
+    def is_editable(self):
+        return self.day > now().date() - timedelta(days=7)
