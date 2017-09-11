@@ -67,7 +67,7 @@ class EntryForm(forms.ModelForm):
     @staticmethod
     def get_last_7_days():
         today = now().date()
-        for i in range(7):
+        for i in range(8):
             day = today - timedelta(days=i)
             label = day.strftime('W%W - %b. %d - %a')
             if day == today:

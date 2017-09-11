@@ -35,4 +35,4 @@ class Entry(models.Model):
 
     @property
     def is_editable(self):
-        return self.day > now().date() - timedelta(days=7)
+        return self.day > now().date() - timedelta(days=8)
