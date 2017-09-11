@@ -23,7 +23,7 @@ X_FRAME_OPTIONS = 'ALLOW'
 LOGIN_REDIRECT_URL = '/'
 
 EMAIL_HOST = 'mail'
-DEFAULT_FROM_EMAIL = 'hr@osedev.org'
+DEFAULT_FROM_EMAIL = 'OSEDev <hr@osedev.org>'
 
 INSTALLED_APPS = [
     'django.contrib.admin',

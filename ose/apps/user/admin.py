@@ -51,12 +51,14 @@ class UserAdmin(BaseUserAdmin):
             EmailAddress.objects.filter(user=user).update(primary=False)
             email = EmailAddress.objects.filter(email__iexact=user.email).first()
             if not email:
-                EmailAddress.objects.create(
+                email = EmailAddress.objects.create(
                     user=user, email=user.email, primary=True, verified=False
                 )
             elif not email.primary:
                 email.primary = True
                 email.save()
+            if form.cleaned_data['verify_email']:
+                email.send_confirmation(request)
         else:
             EmailAddress.objects.filter(user=user).delete()
 
