@@ -15,10 +15,15 @@
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.translation import ugettext_lazy as _
 
 
 class User(AbstractUser):
-    pass
+    is_osedev = models.BooleanField(
+        _('OSEDev status'),
+        default=False,
+        help_text=_('Designates whether the user has been approved as an OSE Developer at some point in time.'),
+    )
 
 
 class Position(models.Model):

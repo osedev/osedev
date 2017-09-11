@@ -14,15 +14,51 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import timedelta, date
+from django.forms import BooleanField, ValidationError
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
+from django.utils.translation import ugettext_lazy as _
 from django.db.models.aggregates import Count
 from .models import User, Position, UserPosition, Term
+from allauth.account.models import EmailAddress
+
+
+class UserChangeForm(BaseUserChangeForm):
+    verify_email = BooleanField(label=_("Send verification email?"), initial=False, required=False)
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if email and EmailAddress.objects.filter(email__iexact=email).exclude(user=self.instance).exists():
+            raise ValidationError(_("This email is already associated with another user."))
+        return email
 
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
+    form = UserChangeForm
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'verify_email')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_osedev', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
     readonly_fields = ('last_login', 'date_joined')
+
+    def save_model(self, request, user, form, change):
+        super().save_model(request, user, form, change)
+        if user.email:
+            EmailAddress.objects.filter(user=user).update(primary=False)
+            email = EmailAddress.objects.filter(email__iexact=user.email).first()
+            if not email:
+                EmailAddress.objects.create(
+                    user=user, email=user.email, primary=True, verified=False
+                )
+            elif not email.primary:
+                email.primary = True
+                email.save()
+        else:
+            EmailAddress.objects.filter(user=user).delete()
 
 
 @admin.register(Position)
