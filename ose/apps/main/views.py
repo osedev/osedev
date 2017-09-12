@@ -69,7 +69,7 @@ class EmbedGraphView(TemplateView):
         height = self.request.GET.get('height', None)
         try:
             m, d, y = start.split('/')
-            start = date(int(y), int(m), int(d))
+            start = datetime.date(int(y), int(m), int(d))
         except:
             start = None
         if graph == 'user':
@@ -90,7 +90,7 @@ class CSVLogReportView(View):
     def get(self, request, *args, **kwargs):
         response = HttpResponse(content_type='text/csv')
         writer = csv.writer(response)
-        start = date(2017, 2, 1)
+        start = datetime.date(2017, 2, 1)
         if kwargs['report'] == 'everybody':
             report = GlobalEffortGraph('weekly', start)
             for day, value in zip(report.periods, report.extrapolate(report.data)):
