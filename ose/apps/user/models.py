@@ -19,11 +19,15 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class User(AbstractUser):
+    email = models.EmailField('email address', unique=True)
     is_osedev = models.BooleanField(
         _('OSEDev status'),
         default=False,
         help_text=_('Designates whether the user has been approved as an OSE Developer at some point in time.'),
     )
+
+    def __str__(self):
+        return "{} ({})".format(self.get_full_name(), self.get_username())
 
 
 class Position(models.Model):

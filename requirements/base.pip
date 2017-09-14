@@ -4,6 +4,7 @@ psycopg2
 django
 django-fsm
 django-allauth
+django-allauth-extras
 django-dartium
 django-yamlfield
 jsonfield
