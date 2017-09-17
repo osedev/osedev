@@ -181,6 +181,7 @@ class IndividualEffortsGraph(BaseGraph):
     @property
     def data(self):
         users = User.objects.filter(
+            is_current=True,
             id__in=Entry.objects
             .filter(day__gte=self.start, day__lte=self.end)
             .order_by('user_id')
