@@ -27,7 +27,7 @@ class Entry(models.Model):
     class Meta:
         verbose_name = "Log Entry"
         verbose_name_plural = "Log Entries"
-        ordering = ('-day',)
+        ordering = '-day', '-updated'
 
     @property
     def hours(self):
