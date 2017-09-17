@@ -107,6 +107,17 @@ class CSVLogReportView(View):
         return response
 
 
+class CSVEntriesView(View):
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        writer = csv.writer(response)
+        entries = Entry.objects.prefetch_related('user').all()
+        for entry in entries:
+            writer.writerow([entry.day.strftime('%m/%d/%y'), entry.user.username, entry.hours, entry.text])
+        return response
+
+
 class LogReportView(TemplateView):
     template_name = 'main/log_report.html'
 
