@@ -9,4 +9,4 @@ django-dartium
 django-yamlfield
 jsonfield
 celery
-markdown
+markdown2
