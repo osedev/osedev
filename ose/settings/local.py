@@ -4,6 +4,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
 
+GEOCODE_ENABLED = os.environ.get('GEOCODE_ENABLED', False)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SESSION_COOKIE_SECURE = False

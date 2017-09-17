@@ -4,12 +4,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, '../'))
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'abc123')
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
 DEBUG = False
 
 SITE_ID = 1
 
 ALLOWED_HOSTS = []
+
+GEOCODE_ENABLED = False
 
 BROKER_URL = 'amqp://guest:guest@rabbitmq:5672//'
 CELERY_TASK_SERIALIZER = "json"

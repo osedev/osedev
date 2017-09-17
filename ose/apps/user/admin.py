@@ -20,24 +20,41 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.aggregates import Count, Sum, Max
 from django.db.models.functions import Coalesce
 from .models import User, Position, UserPosition, Term
-from allauth_extras.admin import BaseUserAdmin
+from allauth_extras.admin import BaseUserAdmin, BaseUserChangeForm
+
+EXTRA_PERSONAL_FIELDS = 'location', 'latitude', 'longitude'
+EXTRA_STATUS_FIELDS = 'is_osedev', 'is_current'
+
+
+class UserChangeForm(BaseUserChangeForm):
+
+    def clean_location(self):
+        return self.cleaned_data["location"].strip()
 
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
+    add_form = form = UserChangeForm
     fieldsets = BaseUserAdmin.fieldsets
-    fieldsets[2][1]['fields'] = ('is_osedev',) + fieldsets[2][1]['fields']
-    readonly_fields = ('last_login',)
+    fieldsets[1][1]['fields'] += EXTRA_PERSONAL_FIELDS
+    fieldsets[2][1]['fields'] = EXTRA_STATUS_FIELDS + fieldsets[2][1]['fields']
+    add_fieldsets = BaseUserAdmin.add_fieldsets
+    add_fieldsets[1][1]['fields'] += EXTRA_PERSONAL_FIELDS
+    add_fieldsets[2][1]['fields'] = EXTRA_STATUS_FIELDS + add_fieldsets[2][1]['fields']
+    readonly_fields = 'last_login', 'latitude', 'longitude'
 
-    list_display = ('username', 'email', 'first_name', 'last_name', 'hours', 'logged', 'joined', 'is_active', 'is_osedev', 'is_staff')
-    list_filter = ('date_joined', 'is_active', 'is_osedev', 'is_staff', 'is_superuser', 'groups')
+    list_display = (
+        'username', 'email', 'first_name', 'last_name', 'hours', 'logged', 'joined',
+        *EXTRA_STATUS_FIELDS, 'is_staff', 'is_active'
+    )
+    list_filter = ('date_joined', *EXTRA_STATUS_FIELDS, 'is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('username', 'first_name', 'last_name', 'email')
 
     def get_queryset(self, request):
         return (
             super().get_queryset(request)
             .annotate(minutes=Coalesce(Sum('entries__minutes'), 0))
-            .annotate(last_log=Max('entries__day'))
+            .annotate(last_log=Max('entries__updated'))
         )
 
     def hours(self, obj):

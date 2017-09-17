@@ -10,3 +10,5 @@ django-yamlfield
 jsonfield
 celery
 markdown2
+
+googlemaps
