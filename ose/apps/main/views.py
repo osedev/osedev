@@ -13,7 +13,9 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import io
 import csv
+from markdown2 import markdown
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import View, TemplateView
@@ -117,3 +119,17 @@ class LogReportView(TemplateView):
             .all()
         )
         return ctx
+
+
+class LegalView(TemplateView):
+    template_name = 'main/legal.html'
+
+    def get_context_data(self, **kwargs):
+        document = kwargs.pop('legal')
+        with open('/home/lex/projects/osedev/ose/legal/{}.md'.format(document), 'r') as md:
+            return super().get_context_data(
+                legal=markdown(md.read(), extras=[
+                    'tables', 'cuddled-lists', 'break-on-newline', 'header-ids'
+                ]),
+                **kwargs
+            )
