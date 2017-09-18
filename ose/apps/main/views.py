@@ -141,11 +141,14 @@ class Top20ReportView(TemplateView):
         ctx = super().get_context_data(**kwargs)
         if kwargs['span'] == 'week':
             day = self.request.GET.get('day', None)
-            try:
-                m, d, y = day.split('/')
-                start, end = week_start_end(datetime.date(int(y), int(m), int(d)))
-            except:
-                start, end = week_start_end(now().date() - timedelta(days=7))
+            if day == 'today':
+                start, end = week_start_end(now().date())
+            else:
+                try:
+                    m, d, y = day.split('/')
+                    start, end = week_start_end(datetime.date(int(y), int(m), int(d)))
+                except:
+                    start, end = week_start_end(now().date() - timedelta(days=7))
             ctx['title'] = 'Top 20 for {}'.format(start.strftime('%G Week %W'))
             ctx['subtitle'] = '{} - {}'.format(
                 start.strftime('%b %d'),
