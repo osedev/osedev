@@ -151,15 +151,9 @@ class Top20ReportView(TemplateView):
                 start.strftime('%b %d'),
                 end.strftime('%b %d'),
             )
-            filtered_minutes = Subquery(
-                Entry.objects
-                .filter(day__gte=start, day__lte=end, user=OuterRef('pk'))
-                .values('minutes')[:1],
-                output_field=IntegerField()
-            )
-            qs = User.objects.annotate(
-                minutes=Coalesce(filtered_minutes, 0),
-            ).filter(minutes__gt=0)
+            qs = User.objects\
+                .filter(entries__day__gte=start, entries__day__lte=end)\
+                .annotate(minutes=Coalesce(Sum('entries__minutes'), 0))
         else:
             ctx['title'] = 'Top 20 of All Time'
             qs = User.objects.annotate(
@@ -168,7 +162,7 @@ class Top20ReportView(TemplateView):
         ctx['records'] = []
         for record in qs.order_by('-minutes')[:20]:
             ctx['records'].append({
-                'hours': round(record.minutes / 60),
+                'hours': '{:.1f}'.format(record.minutes / 60),
                 'user': record.username
             })
         return ctx
