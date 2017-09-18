@@ -15,7 +15,7 @@
 
 from unittest import TestCase
 from datetime import timedelta, date
-from .utils import mondays, months, years
+from .utils import mondays, months, years, week_start_end
 
 
 class TestDateUtils(TestCase):
@@ -50,3 +50,17 @@ class TestDateUtils(TestCase):
             date(2016, 1, 1),
             date(2017, 1, 1),
         ], list(years(start, end)))
+
+    def test_week_details(self):
+        self.assertEqual(
+            (date(2017, 1, 16), date(2017, 1, 22)),
+            week_start_end(date(2017, 1, 16))
+        )
+        self.assertEqual(
+            (date(2017, 1, 16), date(2017, 1, 22)),
+            week_start_end(date(2017, 1, 22))
+        )
+        self.assertEqual(
+            (date(2017, 1, 16), date(2017, 1, 22)),
+            week_start_end(date(2017, 1, 18))
+        )

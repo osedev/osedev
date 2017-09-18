@@ -40,3 +40,8 @@ def years(start, end):
     while year <= end.year:
         yield date(year, 1, 1)
         year += 1
+
+
+def week_start_end(day):
+    weekday = day.isoweekday()
+    return day - timedelta(days=weekday-1), day + timedelta(days=7-weekday)

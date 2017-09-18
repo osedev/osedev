@@ -1,0 +1,27 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head><title>OSE - {{ title }}</title></head>
+<body>
+<h1 style="text-align: center">{{ title }}{% if subtitle %}<br>{{ subtitle }}{% endif %}</h1>
+<table style="margin: auto">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Hours<th>
+        <th>OSE Developer<th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for record in records %}
+    <tr>
+        <td style="text-align: right;">{{ forloop.counter }}</td>
+        <td style="text-align: right;">{{ record.hours }}<td>
+        <td>{{ record.user }}<td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

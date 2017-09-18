@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^report/entries.csv$', CSVEntriesView.as_view(), name='all.entries.csv'),
     url(r'^report/(?P<report>[\w\. ]+)\.csv$', CSVLogReportView.as_view(), name='log.report.csv'),
     url(r'^report/logs$', LogReportView.as_view(), name='log.report.html'),
+    url(r'^report/top20/(?P<span>(week|all-time))$', Top20ReportView.as_view(), name='top20.report.html'),
     url(r'^site/legal/(?P<legal>(terms-of-service|privacy))$', LegalView.as_view(), name='legal'),
 ]

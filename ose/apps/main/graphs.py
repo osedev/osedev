@@ -18,7 +18,7 @@ from django.template.loader import render_to_string
 from django.db.models import DateTimeField
 from django.db.models.aggregates import Sum
 from django.db.models.aggregates import Count
-from django.db.models.functions import Extract, ExtractWeek, TruncMonth, TruncYear
+from django.db.models.functions import Extract, ExtractWeek, TruncMonth, TruncYear, Coalesce
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now, timedelta
 from random import randint

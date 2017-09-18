@@ -20,6 +20,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import View, TemplateView
 from ose.apps.notebook.views import CreateEntry
+from django.db.models import Subquery, OuterRef, IntegerField
+from ose.lib.utils import week_start_end
 from .graphs import *
 
 
@@ -129,6 +131,46 @@ class LogReportView(TemplateView):
             .annotate(week=ExtractWeek('day'), year=ExtractISOYear('day'))
             .all()
         )
+        return ctx
+
+
+class Top20ReportView(TemplateView):
+    template_name = 'main/top20_report.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        if kwargs['span'] == 'week':
+            day = self.request.GET.get('day', None)
+            try:
+                m, d, y = day.split('/')
+                start, end = week_start_end(datetime.date(int(y), int(m), int(d)))
+            except:
+                start, end = week_start_end(now().date() - timedelta(days=7))
+            ctx['title'] = 'Top 20 for {}'.format(start.strftime('%G Week %W'))
+            ctx['subtitle'] = '{} - {}'.format(
+                start.strftime('%b %d'),
+                end.strftime('%b %d'),
+            )
+            filtered_minutes = Subquery(
+                Entry.objects
+                .filter(day__gte=start, day__lte=end, user=OuterRef('pk'))
+                .values('minutes')[:1],
+                output_field=IntegerField()
+            )
+            qs = User.objects.annotate(
+                minutes=Coalesce(filtered_minutes, 0),
+            ).filter(minutes__gt=0)
+        else:
+            ctx['title'] = 'Top 20 of All Time'
+            qs = User.objects.annotate(
+                minutes=Coalesce(Sum('entries__minutes'), 0),
+            )
+        ctx['records'] = []
+        for record in qs.order_by('-minutes')[:20]:
+            ctx['records'].append({
+                'hours': round(record.minutes / 60),
+                'user': record.username
+            })
         return ctx
 
 
