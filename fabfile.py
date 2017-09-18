@@ -20,13 +20,18 @@ def prepare():
 
 def uwsgi():
     """start uwsgi service"""
-    local("uwsgi"
-          " --module=ose.wsgi"
-          " --socket=0.0.0.0:80"
-          " --static-map /static=/static"
-          " --attach-daemon=\"celery -A ose worker -B\""
-          " --env DJANGO_SETTINGS_MODULE={}".format(
-              os.environ['DJANGO_SETTINGS_MODULE']))
+    local(
+        "uwsgi"
+        " --module=ose.wsgi"
+        " --socket=0.0.0.0:80"
+        " --static-map /static=/static"
+        " --attach-daemon=\"celery -A ose worker -B\""
+        " --env DJANGO_SETTINGS_MODULE={}"
+        " --env GOOGLE_API_KEY={}".format(
+            os.environ['DJANGO_SETTINGS_MODULE'],
+            os.environ['GOOGLE_API_KEY'],
+        )
+    )
 
 
 def test():
