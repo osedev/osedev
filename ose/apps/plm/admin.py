@@ -25,7 +25,7 @@ from .models import Product
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    fields = 'name', 'description', 'category', 'spreadsheet'
+    fields = 'name', 'description', 'category', 'spreadsheet', 'cell'
     list_display = 'name', 'category', 'complete', 'progress_updated'
 
     def complete(self, obj):
