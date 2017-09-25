@@ -16,7 +16,7 @@
 import datetime
 from django.template.loader import render_to_string
 from django.db.models import DateTimeField
-from django.db.models.aggregates import Sum
+from django.db.models.aggregates import Sum, Max
 from django.db.models.aggregates import Count
 from django.db.models.functions import Extract, ExtractWeek, TruncMonth, TruncYear, Coalesce
 from django.utils.safestring import mark_safe
@@ -25,6 +25,7 @@ from random import randint
 
 from ose.apps.user.models import User
 from ose.apps.notebook.models import Entry
+from ose.apps.plm.models import Progress
 
 from ose.lib.utils import mondays, months, years
 
@@ -37,6 +38,7 @@ class ExtractISOYear(Extract):
 class BaseGraph:
     id = None
     data = None
+    model = Entry
 
     PERIODS = {
         'weekly': 'Week',
@@ -87,7 +89,7 @@ class BaseGraph:
                 yield mark_safe(day.strftime("%Y"))
 
     def get_query(self, **kwargs):
-        qs = Entry.objects.filter(day__gte=self.start, day__lte=self.end, **kwargs)
+        qs = self.model.objects.filter(day__gte=self.start, day__lte=self.end, **kwargs)
         if self.period == 'weekly':
             qs = qs.annotate(week=ExtractWeek('day'), year=ExtractISOYear('day'))
             return qs.order_by('year', 'week').values('year', 'week')
@@ -124,12 +126,15 @@ class BaseGraph:
                         match = True
 
             if match:
-                value['hours'] = value['minutes'] / 60.0
+                self.update_value(value)
                 yield value
                 value = None
             else:
                 yield {}
                 # value preserved for next loop
+
+    def update_value(self, value):
+        value['hours'] = value['minutes'] / 60.0
 
     def get_context(self, **kwargs):
         context = {
@@ -203,6 +208,24 @@ class IndividualEffortsGraph(BaseGraph):
     def get_context(self, **kwargs):
         return super().get_context(data=list(self.data))
 
+
+class BurnDownGraph(BaseGraph):
+    id = 'burn-down'
+    model = Progress
+
+    def __init__(self, product, *args):
+        super().__init__(*args)
+        self.product = product
+
+    def get_context(self, **kwargs):
+        return super().get_context(product=self.product)
+
+    def update_value(self, value):
+        value['remaining'] = 100 - value['complete']
+
+    @property
+    def data(self):
+        return self.get_query(product=self.product).annotate(complete=Max('complete'))
 
 #def wiki_registrations():
 #    return (

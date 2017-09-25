@@ -20,6 +20,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import View, TemplateView
 from ose.apps.notebook.views import CreateEntry
+from ose.apps.plm.models import Product
 from django.db.models import Subquery, OuterRef, IntegerField
 from ose.lib.utils import week_start_end
 from .graphs import *
@@ -87,6 +88,23 @@ class EmbedGraphView(TemplateView):
             return super().get_context_data(graph=GlobalEffortGraph(period, start, height))
         else:
             raise NotImplementedError
+
+
+class BurnDownGraphView(TemplateView):
+    template_name = 'main/graphs/embed.html'
+
+    def get_context_data(self, **kwargs):
+        period = kwargs.get('period', 'weekly')
+        start = self.request.GET.get('start', None)
+        height = self.request.GET.get('height', None)
+        try:
+            m, d, y = start.split('/')
+            start = datetime.date(int(y), int(m), int(d))
+        except:
+            start = None
+        return super().get_context_data(graph=BurnDownGraph(
+            get_object_or_404(Product, name=kwargs['product']), period, start, height
+        ))
 
 
 class CSVLogReportView(View):

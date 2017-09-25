@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_dartium',
+    'django_celery_beat',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'ose.apps.main',
     'ose.apps.notebook',
     'ose.apps.onboarding',
+    'ose.apps.plm',
 ]
 
 MIDDLEWARE = [
