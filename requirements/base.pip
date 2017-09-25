@@ -5,7 +5,6 @@ django
 django-fsm
 django-allauth
 django-allauth-extras
-django-celery-beat
 django-dartium
 django-yamlfield
 jsonfield
