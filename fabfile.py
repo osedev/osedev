@@ -25,7 +25,7 @@ def uwsgi():
         " --module=ose.wsgi"
         " --socket=0.0.0.0:80"
         " --static-map /static=/static"
-        " --attach-daemon=\"celery -A ose worker -B\""
+        " --attach-daemon=\"celery -A ose worker -B -l info\""
         " --env DJANGO_SETTINGS_MODULE={}"
         " --env GOOGLE_API_KEY={}".format(
             os.environ['DJANGO_SETTINGS_MODULE'],
