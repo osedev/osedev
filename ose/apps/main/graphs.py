@@ -218,7 +218,18 @@ class BurnDownGraph(BaseGraph):
         self.product = product
 
     def get_context(self, **kwargs):
-        return super().get_context(product=self.product)
+        data = []
+        previous = None
+        for value in  self.extrapolate(self.data):
+            if 'remaining' not in value:
+                if previous is None:
+                    value['remaining'] = 100
+                else:
+                    value['remaining'] = previous
+            else:
+                previous = value['remaining']
+            data.append(value)
+        return super().get_context(product=self.product, data=data)
 
     def update_value(self, value):
         value['remaining'] = 100 - value['complete']
