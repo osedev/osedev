@@ -17,5 +17,5 @@ from django.apps import AppConfig
 
 
 class PLMConfig(AppConfig):
-    name = 'ose.apps.plm'
+    name = 'osedev.apps.plm'
     verbose_name = "PLM (Product Lifecycle Management)"

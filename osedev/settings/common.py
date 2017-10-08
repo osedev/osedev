@@ -44,12 +44,12 @@ INSTALLED_APPS = [
 #    'allauth.socialaccount.providers.facebook',
 #    'allauth.socialaccount.providers.github',
 #    'allauth.socialaccount.providers.openid',
-    'ose.lib',
-    'ose.apps.user',
-    'ose.apps.main',
-    'ose.apps.notebook',
-    'ose.apps.onboarding',
-    'ose.apps.plm',
+    'osedev.lib',
+    'osedev.apps.user',
+    'osedev.apps.main',
+    'osedev.apps.notebook',
+    'osedev.apps.onboarding',
+    'osedev.apps.plm',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ose.urls'
+ROOT_URLCONF = 'osedev.urls'
 
 TEMPLATES = [
     {
@@ -76,13 +76,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'ose.apps.main.context_processors.ose',
+                'osedev.apps.main.context_processors.ose',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'ose.wsgi.application'
+WSGI_APPLICATION = 'osedev.wsgi.application'
 
 
 # Database
@@ -123,7 +123,7 @@ AUTHENTICATION_BACKENDS = (
 
 # Django Allauth Configuration
 # http://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "ose.apps.user.account.AccountAdapter"
+ACCOUNT_ADAPTER = "osedev.apps.user.account.AccountAdapter"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
@@ -138,7 +138,7 @@ ACCOUNT_USERNAME_BLACKLIST = (
     'app', 'activity', 'graph', 'graphs', 'report', 'reports',
 )
 ACCOUNT_USERNAME_MIN_LENGTH = 2
-SOCIALACCOUNT_ADAPTER = "ose.apps.user.account.SocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "osedev.apps.user.account.SocialAccountAdapter"
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -161,8 +161,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.normpath(os.path.join(ROOT_DIR, '..', 'static'))
 
 STATICFILES_DIRS = (
-    'ose/static',
-    ('dart/build', 'ose/dart/build/web'),
+    'osedev/static',
+    ('dart/build', 'osedev/dart/build/web'),
 )
 
 

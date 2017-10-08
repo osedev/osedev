@@ -39,7 +39,7 @@ class ProductAdmin(admin.ModelAdmin):
     progress_updated.admin_order_field = 'progress__updated'
 
     def import_progress(self, request, queryset):
-        from ose.apps.plm.tasks import import_progress
+        from osedev.apps.plm.tasks import import_progress
         import_progress(queryset)
         self.message_user(
             request,

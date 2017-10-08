@@ -14,12 +14,12 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import url, include
-from ose import admin
+from osedev import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^notebook/', include('ose.apps.notebook.urls')),
-    url(r'^onboarding/', include('ose.apps.onboarding.urls')),
-    url(r'', include('ose.apps.main.urls')),
-    url(r'', include('ose.apps.user.urls')),
+    url(r'^notebook/', include('osedev.apps.notebook.urls')),
+    url(r'^onboarding/', include('osedev.apps.onboarding.urls')),
+    url(r'', include('osedev.apps.main.urls')),
+    url(r'', include('osedev.apps.user.urls')),
 ]

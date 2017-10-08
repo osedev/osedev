@@ -14,6 +14,6 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from celery import Celery
-app = Celery('ose')
+app = Celery('osedev')
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks()

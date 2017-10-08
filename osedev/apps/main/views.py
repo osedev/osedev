@@ -19,10 +19,10 @@ from markdown2 import markdown
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import View, TemplateView
-from ose.apps.notebook.views import CreateEntry
-from ose.apps.plm.models import Product
+from osedev.apps.notebook.views import CreateEntry
+from osedev.apps.plm.models import Product
 from django.db.models import Subquery, OuterRef, IntegerField
-from ose.lib.utils import week_start_end
+from osedev.lib.utils import week_start_end
 from .graphs import *
 
 
@@ -194,7 +194,7 @@ class LegalView(TemplateView):
 
     def get_context_data(self, **kwargs):
         document = kwargs.pop('legal')
-        with open('/home/lex/projects/osedev/ose/legal/{}.md'.format(document), 'r') as md:
+        with open('/home/lex/projects/osedev/osedev/legal/{}.md'.format(document), 'r') as md:
             return super().get_context_data(
                 legal=markdown(md.read(), extras=[
                     'tables', 'cuddled-lists', 'break-on-newline', 'header-ids'

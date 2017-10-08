@@ -18,7 +18,7 @@ from unittest import skip
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
-from ose.apps.user.factories import UserFactory
+from osedev.apps.user.factories import UserFactory
 from ..factories import ApplicationFactory, ApplicationInstanceFactory
 from ..models import Step, StepValue
 

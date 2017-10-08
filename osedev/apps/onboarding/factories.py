@@ -15,7 +15,7 @@
 
 import factory
 from factory import fuzzy
-from ose.apps.user.factories import UserFactory, PositionFactory
+from osedev.apps.user.factories import UserFactory, PositionFactory
 
 from .models import Application, ApplicationInstance, StepValue
 

@@ -17,10 +17,10 @@ from datetime import date, timedelta
 from django.views.generic import TemplateView, CreateView
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from ose.apps.main.graphs import UserEffortGraph
-from ose.apps.notebook.models import Entry
-from ose.apps.notebook.views import CreateEntry
-from ose.apps.notebook.forms import EntryForm
+from osedev.apps.main.graphs import UserEffortGraph
+from osedev.apps.notebook.models import Entry
+from osedev.apps.notebook.views import CreateEntry
+from osedev.apps.notebook.forms import EntryForm
 
 from .models import User
 

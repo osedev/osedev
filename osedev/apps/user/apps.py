@@ -17,5 +17,5 @@ from django.apps import AppConfig
 
 
 class UserConfig(AppConfig):
-    name = 'ose.apps.user'
+    name = 'osedev.apps.user'
     verbose_name = "Users, Positions and Authentication"

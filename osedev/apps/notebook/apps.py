@@ -17,5 +17,5 @@ from django.apps import AppConfig
 
 
 class NotebookConfig(AppConfig):
-    name = 'ose.apps.notebook'
+    name = 'osedev.apps.notebook'
     verbose_name = "Notebooks and Time Tracking"

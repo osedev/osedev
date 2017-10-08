@@ -23,11 +23,11 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import now, timedelta
 from random import randint
 
-from ose.apps.user.models import User
-from ose.apps.notebook.models import Entry
-from ose.apps.plm.models import Progress
+from osedev.apps.user.models import User
+from osedev.apps.notebook.models import Entry
+from osedev.apps.plm.models import Progress
 
-from ose.lib.utils import mondays, months, years
+from osedev.lib.utils import mondays, months, years
 
 
 @DateTimeField.register_lookup

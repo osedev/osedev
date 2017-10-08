@@ -13,7 +13,7 @@ SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
 STATICFILES_DIRS += (
-    ('dart/src', 'ose/dart/web'),
+    ('dart/src', 'osedev/dart/web'),
 )
 
 DATABASES['default'].update({
