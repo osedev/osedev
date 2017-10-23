@@ -18,26 +18,10 @@ def prepare():
     local('psql -c "VACUUM ANALYZE" {}'.format(args))
 
 
-def uwsgi():
-    """start uwsgi service"""
-    local(
-        "uwsgi"
-        " --module=ose.wsgi"
-        " --socket=0.0.0.0:80"
-        " --static-map /static=/static"
-        " --attach-daemon=\"celery -A ose worker -B -l info\""
-        " --env DJANGO_SETTINGS_MODULE={}"
-        " --env GOOGLE_API_KEY={}".format(
-            os.environ['DJANGO_SETTINGS_MODULE'],
-            os.environ['GOOGLE_API_KEY'],
-        )
-    )
-
-
 def test():
     """django continuous integration test"""
-    with shell_env(DJANGO_SETTINGS_MODULE='ose.settings.test'):
-        local('coverage run -p manage.py test -v 2 ose.apps ose.lib')
+    with shell_env(DJANGO_SETTINGS_MODULE='osedev.settings.test'):
+        local('coverage run -p manage.py test -v 2 osedev.apps osedev.lib')
         local('coverage combine')
         local('coverage html -d reports')
 
@@ -46,9 +30,9 @@ def updatecopyright():
     import glob
     from itertools import chain
     paths = [f for f in chain(
-        glob.glob('ose/*.py'),
-        glob.glob('ose/apps/**/*.py', recursive=True),
-        glob.glob('ose/lib/**/*.py', recursive=True),
+        glob.glob('osedev/*.py'),
+        glob.glob('osedev/apps/**/*.py', recursive=True),
+        glob.glob('osedev/lib/**/*.py', recursive=True),
     ) if 'migrations' not in f]
     copyright = open('COPYRIGHT').read()
     for file in paths[1:]:
@@ -69,7 +53,7 @@ def fetchdb(envname='production'):
     """fetch remote database, see getdb"""
     container = 'damoti_backup_1'
     dbname = 'ose_'+envname
-    dump_file = 'ose.'+envname+'.dump'
+    dump_file = 'osedev.'+envname+'.dump'
     dump_dir = '/var/lib/postgresql/backups'
     dump_path = os.path.join(dump_dir, dump_file)
     # -Fc : custom postgresql compressed format

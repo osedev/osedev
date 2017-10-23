@@ -3,6 +3,8 @@ name: osedev
 layers:
   base:
     from: damoti/base:latest
+    apt-get:
+      - supervisor
     context:
       - requirements/base.pip
     build:
@@ -11,14 +13,15 @@ layers:
     context:
       - .
     build:
-      - cd /app/ose/dart && pub get && pub build
-      - cd /app/ose/static && npm install && gulp
+      - cp conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+      - cd /app/osedev/dart && pub get && pub build
+      - cd /app/osedev/static && npm install && gulp
       - cd /app
       - pip3 install --src=/src -r requirements/app.pip
-      - export DJANGO_SETTINGS_MODULE=ose.settings.common
+      - export DJANGO_SETTINGS_MODULE=osedev.settings.common
       - python3 manage.py collectstatic --noinput
-    prepare: fab prepare
-    start: fab uwsgi
+    prepare: fab prepare:service={service},branch={git-branch}
+    start: /usr/bin/supervisord
     wait-for: db:5432
   test:
     build:

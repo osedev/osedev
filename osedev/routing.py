@@ -13,4 +13,19 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-default_app_config = 'osedev.apps.onboarding.app.OnboardingConfig'
+from channels import route
+from channels.staticfiles import StaticFilesConsumer
+from osedev.apps.chat.consumers import ChatConsumer
+from channels.generic.websockets import WebsocketDemultiplexer
+
+
+class OSEDevStreams(WebsocketDemultiplexer):
+    consumers = {
+        'chat': ChatConsumer
+    }
+
+
+channel_routing = [
+    route('http.request', StaticFilesConsumer()),
+    OSEDevStreams.as_route(path=r"^/streams"),
+]

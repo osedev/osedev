@@ -9,6 +9,9 @@ django-dartium
 django-yamlfield
 jsonfield
 celery
+channels
+asgi_ipc
+
 markdown2
 
 googlemaps

@@ -1,4 +1,4 @@
-#  Copyright (C) 2017 Lex Berezhny <lex@damoti.com>.
+#  Copyright (C) 2017 The OSEDev Authors.
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as published
@@ -16,6 +16,6 @@
 from django.apps import AppConfig
 
 
-class UserConfig(AppConfig):
-    name = 'osedev.apps.user'
-    verbose_name = "Users, Positions and Authentication"
+class OnboardingConfig(AppConfig):
+    name = 'osedev.apps.onboarding'
+    verbose_name = "Onboarding"

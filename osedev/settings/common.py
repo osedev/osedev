@@ -1,8 +1,5 @@
 import os, sys
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, '../'))
-
 SECRET_KEY = os.environ.get('SECRET_KEY', 'abc123')
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
@@ -19,7 +16,20 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_ACCEPT_CONTENT = ["json"]
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_ipc.IPCChannelLayer",
+        "ROUTING": "osedev.routing.channel_routing",
+        "CONFIG": {
+            "prefix": "osedev",
+        },
+    },
+}
+
 # Application definition
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, '../'))
 
 AUTH_USER_MODEL = 'user.User'
 X_FRAME_OPTIONS = 'ALLOW'
@@ -37,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_dartium',
+    'channels',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

@@ -1,4 +1,4 @@
-#  Copyright (C) 2017 Lex Berezhny <lex@damoti.com>.
+#  Copyright (C) 2017 The OSEDev Authors.
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as published
@@ -16,6 +16,5 @@
 from django.apps import AppConfig
 
 
-class PLMConfig(AppConfig):
-    name = 'osedev.apps.plm'
-    verbose_name = "PLM (Product Lifecycle Management)"
+class MainConfig(AppConfig):
+    name = 'osedev.apps.main'
