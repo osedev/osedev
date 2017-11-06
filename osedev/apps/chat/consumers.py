@@ -14,17 +14,25 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from channels.generic.websockets import JsonWebsocketConsumer
+from .models import Room
 
 
 class ChatConsumer(JsonWebsocketConsumer):
-    http_user = True
-    strict_ordering = True
 
     def connect(self, message, multiplexer=None, **kwargs):
-        multiplexer.send({'status': 'I just connected.'})
+        message.channel_session['rooms'] = []
+        for room in message.user.rooms.all():
+            room.group.add(multiplexer)
+            message.channel_session['rooms'].append(room.id)
 
-    def disconnect(self, message, **kwargs):
-        pass
+    def disconnect(self, message, multiplexer=None, **kwargs):
+        for room_id in message.channel_session.get("rooms", []):
+            try:
+                room = Room.objects.get(pk=room_id)
+                room.group.discard(multiplexer)
+            except Room.DoesNotExist:
+                pass
 
     def receive(self, content, multiplexer=None, **kwargs):
-        multiplexer.send({'message': content})
+        room = Room.objects.get(pk=content['room'])
+        room.send(content.user, content['text'])

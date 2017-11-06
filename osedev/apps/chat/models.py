@@ -13,7 +13,9 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import json
 from django.db import models
+from channels import Group
 
 
 class Room(models.Model):
@@ -26,9 +28,17 @@ class Room(models.Model):
         verbose_name_plural = "Rooms"
         ordering = 'name',
 
+    @property
+    def group(self):
+        return Group("room-%s" % self.id)
+
+    def send(self, sender, text):
+        message = Message.objects.create(room=self, text=text, sender=sender)
+        self.group.send(message.data)
+
 
 class RoomParticipant(models.Model):
-    room = models.ForeignKey(Room, related_name="participant")
+    room = models.ForeignKey(Room, related_name="participants")
     user = models.ForeignKey("user.User", related_name="room_participation")
     notify = models.BooleanField(default=False)
 
@@ -36,10 +46,18 @@ class RoomParticipant(models.Model):
 class Message(models.Model):
     room = models.ForeignKey(Room, related_name="messages", on_delete=models.CASCADE)
     text = models.TextField()
-    poster = models.ForeignKey("user.User", related_name="entries", on_delete=models.SET_NULL)
-    posted = models.DateTimeField(auto_now=True)
+    sender = models.ForeignKey("user.User", related_name="messages", on_delete=models.PROTECT)
+    sent = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Message"
         verbose_name_plural = "Messages"
-        ordering = '-posted',
+        ordering = '-sent',
+
+    @property
+    def data(self):
+        return {
+            'room': str(self.room_id),
+            'sender': self.sender.username,
+            'text': self.text
+        }

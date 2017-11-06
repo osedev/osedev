@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'osedev.apps.notebook',
     'osedev.apps.onboarding',
     'osedev.apps.plm',
+    'osedev.apps.chat',
 ]
 
 MIDDLEWARE = [

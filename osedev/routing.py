@@ -15,17 +15,41 @@
 
 from channels import route
 from channels.staticfiles import StaticFilesConsumer
-from osedev.apps.chat.consumers import ChatConsumer
 from channels.generic.websockets import WebsocketDemultiplexer
+from django.contrib.auth import login, authenticate
+from osedev.apps.chat.consumers import ChatConsumer
 
 
-class OSEDevStreams(WebsocketDemultiplexer):
+class OSEDevWebsocket(WebsocketDemultiplexer):
+    http_user_and_session = True
+
     consumers = {
         'chat': ChatConsumer
     }
 
+    def authenticate(self):
+        if not self.message.user.is_authenticated:
+            credentials = {}
+            for key, value in self.message.content['headers']:
+                if key in (b'x-username', b'x-password'):
+                    credentials[key.decode()[2:]] = value.decode()
+            if len(credentials) == 2:
+                self.message.user = authenticate(**credentials)
+
+    def connect(self, message, **kwargs):
+        self.authenticate()
+        super().connect(message, **kwargs)
+
+    def disconnect(self, message, **kwargs):
+        self.authenticate()
+        super().disconnect(message, **kwargs)
+
+    def receive(self, content, **kwargs):
+        self.authenticate()
+        super().receive(content, **kwargs)
+
 
 channel_routing = [
     route('http.request', StaticFilesConsumer()),
-    OSEDevStreams.as_route(path=r"^/streams"),
+    OSEDevWebsocket.as_route(),
 ]
