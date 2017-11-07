@@ -14,25 +14,39 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from channels.generic.websockets import JsonWebsocketConsumer
-from .models import Room
+from .models import Room, RoomParticipant
 
 
 class ChatConsumer(JsonWebsocketConsumer):
 
     def connect(self, message, multiplexer=None, **kwargs):
         message.channel_session['rooms'] = []
-        for room in message.user.rooms.all():
-            room.group.add(multiplexer)
+        joined = message.user.rooms.all()
+        rooms = []
+        for room in joined:
+            room.group.add(multiplexer.reply_channel)
             message.channel_session['rooms'].append(room.id)
+            print('joining: {}'.format(room.id))
+            rooms.append((room.id, room.name, room.description, True))
+        for room in Room.objects.exclude(pk__in=joined).all():
+            rooms.append((room.id, room.name, room.description, False))
+        multiplexer.send({'rooms': rooms})
 
     def disconnect(self, message, multiplexer=None, **kwargs):
         for room_id in message.channel_session.get("rooms", []):
             try:
+                print('leaving: {}'.format(room_id))
                 room = Room.objects.get(pk=room_id)
                 room.group.discard(multiplexer)
             except Room.DoesNotExist:
                 pass
 
     def receive(self, content, multiplexer=None, **kwargs):
-        room = Room.objects.get(pk=content['room'])
-        room.send(content.user, content['text'])
+        print(content)
+        if 'join' in content:
+            room = Room.objects.get(pk=content['join'])
+            print('user {} joining {} ....'.format(self.message.user, room.name))
+            RoomParticipant.objects.create(room=room, user=self.message.user)
+        else:
+            room = Room.objects.get(pk=content['room'])
+            room.send(self.message.user, content['message'])

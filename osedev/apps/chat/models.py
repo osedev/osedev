@@ -34,7 +34,10 @@ class Room(models.Model):
 
     def send(self, sender, text):
         message = Message.objects.create(room=self, text=text, sender=sender)
-        self.group.send(message.data)
+        self.group.send({'text': json.dumps({
+            'stream': 'chat',
+            'payload': message.data
+        })})
 
 
 class RoomParticipant(models.Model):

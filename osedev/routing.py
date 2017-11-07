@@ -16,7 +16,7 @@
 from channels import route
 from channels.staticfiles import StaticFilesConsumer
 from channels.generic.websockets import WebsocketDemultiplexer
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import get_user_model, authenticate
 from osedev.apps.chat.consumers import ChatConsumer
 
 
@@ -29,12 +29,16 @@ class OSEDevWebsocket(WebsocketDemultiplexer):
 
     def authenticate(self):
         if not self.message.user.is_authenticated:
-            credentials = {}
-            for key, value in self.message.content['headers']:
-                if key in (b'x-username', b'x-password'):
-                    credentials[key.decode()[2:]] = value.decode()
-            if len(credentials) == 2:
-                self.message.user = authenticate(**credentials)
+            if 'user_id' in self.message.channel_session:
+                self.message.user = get_user_model().objects.get(pk=self.message.channel_session['user_id'])
+            else:
+                credentials = {}
+                for key, value in self.message.content['headers']:
+                    if key in (b'x-username', b'x-password'):
+                        credentials[key.decode()[2:]] = value.decode()
+                if len(credentials) == 2:
+                    self.message.user = authenticate(**credentials)
+                    self.message.channel_session['user_id'] = self.message.user.pk
 
     def connect(self, message, **kwargs):
         self.authenticate()

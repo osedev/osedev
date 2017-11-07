@@ -36,8 +36,8 @@ class RoomAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return (
             super().get_queryset(request)
-            .annotate(participants_count=Count('participants'))
-            .annotate(messages_count=Count('messages'))
+            .annotate(participants_count=Count('participants', distinct=True))
+            .annotate(messages_count=Count('messages', distinct=True))
         )
 
     def participants(self, obj):
@@ -46,6 +46,6 @@ class RoomAdmin(admin.ModelAdmin):
     participants.admin_order_field = 'participants_count'
 
     def messages(self, obj):
-        return obj.messages
+        return obj.messages_count
     messages.short_description = _('Messages')
     messages.admin_order_field = 'messages_count'
