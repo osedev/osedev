@@ -1,7 +1,7 @@
 fabric3
 psycopg2
 
-django
+django==2.0b1
 django-fsm
 django-allauth
 django-allauth-extras
