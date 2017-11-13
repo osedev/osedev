@@ -13,31 +13,66 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from channels import Group
 from channels.generic.websockets import JsonWebsocketConsumer
+from channels.binding.websockets import WebsocketBinding
 from .models import Room, RoomParticipant
+
+
+class RoomBinding(WebsocketBinding):
+    model = Room
+    stream = "chat.rooms"
+    fields = "name", "description"
+
+    @classmethod
+    def group_names(cls, instance):
+        return cls.stream,
+
+    def has_permission(self, user, action, pk):
+        return False
 
 
 class ChatConsumer(JsonWebsocketConsumer):
 
     def connect(self, message, multiplexer=None, **kwargs):
         message.channel_session['rooms'] = []
-        joined = message.user.rooms.all()
+        joined = message.user.rooms.prefetch_related('users').all()
         rooms = []
+
+        def add_room(room, **extra):
+            rooms.append({
+                'id': room.id,
+                'name': room.name,
+                'description': room.description,
+                'participants': [
+                    {'id': user.id, 'name': user.username} for user in room.users.all()
+                ],
+                **extra
+            })
+
         for room in joined:
             room.group.add(multiplexer.reply_channel)
             message.channel_session['rooms'].append(room.id)
-            print('joining: {}'.format(room.id))
-            rooms.append((room.id, room.name, room.description, True))
-        for room in Room.objects.exclude(pk__in=joined).all():
-            rooms.append((room.id, room.name, room.description, False))
-        multiplexer.send({'rooms': rooms})
+            add_room(room, joined=True)
+
+        for room in Room.objects.prefetch_related('users').exclude(pk__in=joined).all():
+            add_room(room, joined=False)
+
+        multiplexer.send({
+            'action': 'list',
+            'model': 'chat.room',
+            'data': rooms
+        })
+
+        Group(RoomBinding.stream).add(multiplexer.reply_channel)
 
     def disconnect(self, message, multiplexer=None, **kwargs):
+        Group(RoomBinding.stream).discard(multiplexer.reply_channel)
         for room_id in message.channel_session.get("rooms", []):
             try:
                 print('leaving: {}'.format(room_id))
                 room = Room.objects.get(pk=room_id)
-                room.group.discard(multiplexer)
+                room.group.discard(multiplexer.reply_channel)
             except Room.DoesNotExist:
                 pass
 

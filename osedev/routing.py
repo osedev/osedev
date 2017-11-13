@@ -24,7 +24,7 @@ class OSEDevWebsocket(WebsocketDemultiplexer):
     http_user_and_session = True
 
     consumers = {
-        'chat': ChatConsumer
+        'chat': ChatConsumer,
     }
 
     def authenticate(self):

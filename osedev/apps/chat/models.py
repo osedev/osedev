@@ -30,7 +30,7 @@ class Room(models.Model):
 
     @property
     def group(self):
-        return Group("room-%s" % self.id)
+        return Group("chat-room-%s" % self.id)
 
     def send(self, sender, text):
         message = Message.objects.create(room=self, text=text, sender=sender)
@@ -41,8 +41,8 @@ class Room(models.Model):
 
 
 class RoomParticipant(models.Model):
-    room = models.ForeignKey(Room, related_name="participants")
-    user = models.ForeignKey("user.User", related_name="room_participation")
+    room = models.ForeignKey(Room, related_name="participants", on_delete=models.CASCADE)
+    user = models.ForeignKey("user.User", related_name="room_participation", on_delete=models.CASCADE)
     notify = models.BooleanField(default=False)
 
 

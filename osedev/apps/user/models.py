@@ -103,7 +103,7 @@ class Position(models.Model):
 class UserPosition(models.Model):
     user = models.ForeignKey(User, related_name="positions", on_delete=models.CASCADE)
     position = models.ForeignKey(Position, related_name="users", on_delete=models.PROTECT)
-    term = models.ForeignKey('Term', verbose_name='Current Term', null=True)
+    term = models.ForeignKey('Term', verbose_name='Current Term', null=True, on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = "User Position"
