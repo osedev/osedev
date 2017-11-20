@@ -18,6 +18,7 @@ from channels.staticfiles import StaticFilesConsumer
 from channels.generic.websockets import WebsocketDemultiplexer
 from django.contrib.auth import get_user_model, authenticate
 from osedev.apps.chat.consumers import ChatConsumer
+from osedev.apps.plm.consumers import PLMConsumer
 
 
 class OSEDevWebsocket(WebsocketDemultiplexer):
@@ -25,6 +26,7 @@ class OSEDevWebsocket(WebsocketDemultiplexer):
 
     consumers = {
         'chat': ChatConsumer,
+        'plm': PLMConsumer,
     }
 
     def authenticate(self):
