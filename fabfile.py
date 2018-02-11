@@ -34,15 +34,21 @@ def updatecopyright():
         glob.glob('osedev/apps/**/*.py', recursive=True),
         glob.glob('osedev/lib/**/*.py', recursive=True),
     ) if 'migrations' not in f]
-    copyright = open('COPYRIGHT').read()
-    for file in paths[1:]:
-        lines = iter(open(file).readlines())
+    license = open('LICENSE').readlines()
+    copyright = []
+    for line in license[632:646]:
+        line = line.strip()
+        line = '#  ' + line
+        copyright.append(line.strip())
+    copyright = '\n'.join(copyright) + '\n\n'
+    for fname in paths[1:]:
+        lines = iter(open(fname).readlines())
         line = ''
         for line in lines:
             line = line.strip()
             if line and not line.startswith('#'):
                 break
-        with open(file, 'w') as new:
+        with open(fname, 'w') as new:
             new.write(copyright)
             if line:
                 new.write(line+'\n')
