@@ -12,11 +12,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
-STATICFILES_DIRS += (
-    ('dart/src', 'osedev/dart/web'),
-)
-
 DATABASES['default'].update({
     'NAME': 'ose_local',
-    'PORT': '5433'
 })
