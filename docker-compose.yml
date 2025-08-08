@@ -1,11 +1,15 @@
 version: '2'
 services:
-  test:
-    build: .
+  osedev:
+    image: damoti/osedev:0.1.0
     depends_on:
       - postgres
-      - rabbitmq
+    environment:
+      PG_NAME: osedevdb
+      PG_PASS: password
+    ports:
+      - 8080:8080
   postgres:
     image: postgres:10
-  rabbitmq:
-    image: rabbitmq
+    environment:
+      POSTGRES_PASSWORD: password
